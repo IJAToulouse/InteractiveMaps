@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Thu Jun 14 14:40:32 CEST 2012
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=false
+jarname=MTMap.jar
+manifest.mergeall=true
+manifest.mainclass=code.scene.StartMapScene
+manifest.file=<createnew>
+jarname.isextern=false
+onejar.expand=
+excludes=
+includes=

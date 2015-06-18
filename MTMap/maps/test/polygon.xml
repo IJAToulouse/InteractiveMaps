@@ -1,0 +1,8 @@
+<svg height="210" width="400">
+  <path id="yes" d="M150 0 L75 200 L225 200 Z">
+  	<test>test</test>
+  </path>
+  <path d="M150 0 L75 200 L225 200 Z" />
+  <path d="M150 0 L75 200 L225 200 Z" />
+  <path id="yes" d="M150 0 L75 200 L225 200 Z" />
+</svg>
