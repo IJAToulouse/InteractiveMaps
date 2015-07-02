@@ -1,0 +1,7 @@
+!!! WARNING !!! 
+!!! Only works for Windows 7 environment !!!
+
+1 - Create a directory and put all files contained in dist directory 
+2 - Update install.bat directory and modify ACCESSIMAP path
+3 - Launch install.bat as administrator
+4 - Launch launch.bat

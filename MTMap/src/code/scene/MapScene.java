@@ -54,11 +54,6 @@ public class MapScene extends AbstractScene {
 	// Eléments SVG
 	private HashMap<String, Rect> elements;
 
-	// Echelle du rapport entre la taille de la carte en pixels et sa taille si
-	// le lieu était réel en mètres
-	// Echelle = 0.064 -> Largeur d'une rue = 5 mètres
-	private double echelle;
-
 	// Activation de la sortie braille
 	public static boolean brailleOnline;
 	
@@ -80,15 +75,12 @@ public class MapScene extends AbstractScene {
 
 		// Chargement des propriétés
 		Properties properties = new Properties();
-		FileInputStream fileStream = new FileInputStream(
-				"src/files/cfg/Settings.txt");
+		FileInputStream fileStream = new FileInputStream("project.properties");
 		try {
 			properties.load(fileStream);
 		} finally {
 			fileStream.close();
 		}
-
-		echelle = new Double(properties.getProperty("echelle")).doubleValue();
 
 		// On peint le fond de la scène en blanc
 		setClearColor(new MTColor(255, 255, 255, 255));
