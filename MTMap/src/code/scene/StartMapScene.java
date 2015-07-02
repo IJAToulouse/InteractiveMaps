@@ -2,6 +2,7 @@ package code.scene;
 
 import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.bind.JAXBException;
@@ -54,8 +55,10 @@ public class StartMapScene extends MTApplication {
 		// On empêche ici que l'utilisateur ne sélectionne aucune carte ou qu'il
 		// ferme la fenêtre de sélection
 		// Sans ce fichier, l'application n'a pas lieu d'être
-		while (svgFileChooser.getSelectedFile() == null)
-			svgFileChooser.showOpenDialog(this);
+		
+		if (!(svgFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)) {
+			System.exit(0);
+		}
 
 		// //Choix du fichier de configuration XML à associer
 		// final CustomFileChooser xmlFileChooser = new CustomFileChooser("xml",
