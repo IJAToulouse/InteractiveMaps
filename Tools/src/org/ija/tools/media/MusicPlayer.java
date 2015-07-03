@@ -9,6 +9,7 @@ import org.ija.tools.SoundPlayer;
 public final class MusicPlayer implements SoundPlayer {
 	
 	private MP3Player player;
+	private String rootDirectory;
 	
 	private MusicPlayer() {
 		player = new MP3Player();
@@ -22,12 +23,12 @@ public final class MusicPlayer implements SoundPlayer {
 		return MusicPlayerHolder.instance;
 	}
 
-	public void play(File mp3) {
+	public void play(String mp3) {
 
 		if (this.isBusy()) {
 			player.stop();
 		}
-		player = new MP3Player(mp3);
+		player = new MP3Player(new File(rootDirectory,mp3));
 		player.play();
 	}
 
@@ -44,7 +45,7 @@ public final class MusicPlayer implements SoundPlayer {
 	public static void main(String[] args) {
 
 		MusicPlayer test = new MusicPlayer();
-		test.play(new File("route.mp3"));
+		test.play("route.mp3");
 
 		while (test.isBusy()) {
 			try {
@@ -55,7 +56,7 @@ public final class MusicPlayer implements SoundPlayer {
 			}
 		}
 
-		test.play(new File("route.mp3"));
+		test.play("route.mp3");
 
 		while (test.isBusy()) {
 			try {
@@ -65,6 +66,10 @@ public final class MusicPlayer implements SoundPlayer {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public void setRootDirectory(String rootDirectory) {
+		this.rootDirectory = rootDirectory;
 	}
 
 }

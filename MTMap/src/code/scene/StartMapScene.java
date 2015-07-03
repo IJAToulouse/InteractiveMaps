@@ -55,40 +55,27 @@ public class StartMapScene extends MTApplication {
 		// On empêche ici que l'utilisateur ne sélectionne aucune carte ou qu'il
 		// ferme la fenêtre de sélection
 		// Sans ce fichier, l'application n'a pas lieu d'être
-		
+
 		if (!(svgFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)) {
 			System.exit(0);
 		}
 
-		// //Choix du fichier de configuration XML à associer
-		// final CustomFileChooser xmlFileChooser = new CustomFileChooser("xml",
-		// "Choisir un fichier de configuration à associer");
-		// //On empêche ici que l'utilisateur ne sélectionne aucun fichier de
-		// configuration ou qu'il ferme la fenêtre de sélection
-		// //Sans ce fichier, l'application n'a pas lieu d'être
-		// while(xmlFileChooser.getSelectedFile() == null)
-		// xmlFileChooser.showOpenDialog(this);
-		//
-		// //Choix du fichier de configuration XML à associer
-		// final CustomFileChooser jpgFileChooser = new CustomFileChooser("jpg",
-		// "Choisir un fichier image de fond");
-		// //On empêche ici que l'utilisateur ne sélectionne aucun fichier
-		// d'image de fond ou qu'il ferme la fenêtre de sélection
-		// while(jpgFileChooser.getSelectedFile() == null)
-		// jpgFileChooser.showOpenDialog(this);
-
-		// On ajoute la scène MapScene dans l'application multi-touch
 		try {
 			addScene(new MapScene(this, "Map Scene", svgFileChooser
-					.getSelectedFile().getPath()));
+					.getSelectedFile()));
 		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 }

@@ -61,7 +61,7 @@ public class MapScene extends AbstractScene {
 
 	private Menu menu;
 
-	public MapScene(AbstractMTApplication app, String name, String fileName)
+	public MapScene(AbstractMTApplication app, String name, File svgFile)
 			throws ParserConfigurationException, SAXException, IOException,
 			JAXBException {
 		super(app, name);
@@ -72,6 +72,8 @@ public class MapScene extends AbstractScene {
 		// Register players
 		ApplicationContext.registerSoundPlayers(MusicPlayer.getInstance(),
 				SAPI5Player.getInstance());
+		
+		MusicPlayer.getInstance().setRootDirectory(svgFile.getParent());
 
 		// Chargement des propriétés
 		Properties properties = new Properties();
@@ -91,13 +93,13 @@ public class MapScene extends AbstractScene {
 		SAXParser parser = factory.newSAXParser();
 		svgParser = new SVGParser();
 		try {
-			parser.parse(new File(fileName), svgParser);
+			parser.parse(svgFile, svgParser);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		// Convert XML file
-		File file = new File(fileName.replace(".svg", ".xml"));
+		File file = new File(svgFile.getPath().replace(".svg", ".xml"));
 		JAXBContext jaxbContext = JAXBContext.newInstance(Config.class);
 
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -122,7 +124,7 @@ public class MapScene extends AbstractScene {
 		System.out.println(conf.getPoiss());
 
 		// Ajout du fond d'écran correspondant à l'image SVG
-		addBackground(fileName.replace(".svg", ".jpg"));
+		addBackground(svgFile.getPath().replace(".svg", ".jpg"));
 		
 		// Map container
 		container = new MapContainer(1488, 1050, 744, 525);

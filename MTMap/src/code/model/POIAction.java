@@ -1,7 +1,5 @@
 package code.model;
 
-import java.io.File;
-
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 
@@ -36,7 +34,7 @@ public class POIAction implements Comparable<POIAction> {
 		if (protocol.equalsIgnoreCase("TTS")) {
 			SAPI5Player.getInstance().speak(data);
 		} else if (protocol.equalsIgnoreCase("MP3")) {
-			MusicPlayer.getInstance().play(new File(data));
+			MusicPlayer.getInstance().play(data);
 		}
 	}
 
