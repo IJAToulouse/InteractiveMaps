@@ -18,14 +18,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.ija.imaps.model.ApplicationContext;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import code.model.ApplicationContext;
 
 // Classe de la scène de la carte interprétée
 public class MapScene extends AbstractScene {

@@ -5,10 +5,9 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.ija.imaps.parser.filechooser.CustomFileChooser;
 import org.mt4j.MTApplication;
 import org.xml.sax.SAXException;
-
-import code.parsing.filechooser.CustomFileChooser;
 
 public class StartMapScene extends MTApplication {
 
