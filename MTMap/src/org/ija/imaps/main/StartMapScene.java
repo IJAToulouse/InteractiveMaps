@@ -8,7 +8,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.ija.imaps.parser.filechooser.CustomFileChooser;
+import org.ija.imaps.gui.CustomFileChooser;
 import org.mt4j.MTApplication;
 import org.xml.sax.SAXException;
 
