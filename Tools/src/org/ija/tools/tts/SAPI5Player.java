@@ -58,12 +58,8 @@ public class SAPI5Player implements SoundPlayer {
 		return SAPI5PlayerHolder.instance;
 	}
 	
-	public void stopAndSpeak(String text) {
+	public void play(String text) {
 		synth.cancelAll();
-		synth.speakPlainText(text, null);
-	}
-
-	public void speak(String text) {
 		synth.speakPlainText(text, null);
 	}
 	
@@ -81,15 +77,27 @@ public class SAPI5Player implements SoundPlayer {
 	public static void main(String args[]) throws AudioException,
 			EngineStateError, InterruptedException {
 
-		SAPI5Player.getInstance().speak("Ceci est un test");
+		SAPI5Player.getInstance().play("Ceci est un test");
 		SAPI5Player.getInstance().test("Ceci est un test");
 		Thread.sleep(200);
 		SAPI5Player.getInstance().stop();
-		SAPI5Player.getInstance().speak("Ceci est un test");
+		SAPI5Player.getInstance().play("Ceci est un test");
 	}
 
 	private void test(String string) {
 		System.out.println(synth.enumerateQueue().hasMoreElements());
+		
+	}
+
+	@Override
+	public void pause() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resume() {
+		// TODO Auto-generated method stub
 		
 	}
 }
