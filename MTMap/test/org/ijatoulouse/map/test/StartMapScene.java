@@ -21,8 +21,7 @@ public class StartMapScene extends MTApplication {
 	public void startUp() {
 		
 		// Choix de la carte SVG à afficher
-		final CustomFileChooser svgFileChooser = new CustomFileChooser("xml",
-				"Choisir la carte SVG");
+		final CustomFileChooser svgFileChooser = new CustomFileChooser("Choisir la carte SVG");
 		
 		while (svgFileChooser.getSelectedFile() == null)
 			svgFileChooser.showOpenDialog(this);

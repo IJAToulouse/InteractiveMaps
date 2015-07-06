@@ -9,11 +9,9 @@ public class CustomFileChooser extends JFileChooser {
 
 	private static final long serialVersionUID = 1L;
 
-	public CustomFileChooser(final String extension, String titre) {
-		super();
-
+	public CustomFileChooser(String titre) {
+		super(titre);
 		this.setMultiSelectionEnabled(false);
-		this.setDialogTitle(titre);
 		this.addChoosableFileFilter(new FileFilter() {
 			@Override
 			public String getDescription() {

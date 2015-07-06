@@ -12,14 +12,8 @@ import org.ija.imaps.gui.CustomFileChooser;
 import org.mt4j.MTApplication;
 import org.xml.sax.SAXException;
 
-/**
- * @author Alexis Paoleschi
- * @mail alexis.paoleschi@gmail.com
- */
-
-// Classe de la MTApplication dans laquelle on ajoute la scène créée au
-// préalable et on la lance
 public class StartMapScene extends MTApplication {
+
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
@@ -40,28 +34,21 @@ public class StartMapScene extends MTApplication {
 			e.printStackTrace();
 		}
 
-		// La méthode statique "initialize" configurera l'application
-		// multi-touch à partir des paramètres donnés dans le fichier
-		// "Settings.txt"
 		initialize();
 	}
 
 	@Override
 	public void startUp() {
-		// Choix de la carte SVG à afficher
-		final CustomFileChooser svgFileChooser = new CustomFileChooser("svg",
-				"Choisir la carte SVG");
-		// On empêche ici que l'utilisateur ne sélectionne aucune carte ou qu'il
-		// ferme la fenêtre de sélection
-		// Sans ce fichier, l'application n'a pas lieu d'être
 
+		final CustomFileChooser svgFileChooser = new CustomFileChooser(
+				"Choisir la carte SVG");
 		if (!(svgFileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)) {
 			System.exit(0);
 		}
 
 		try {
-			addScene(new MapScene(this, "Map Scene", svgFileChooser
-					.getSelectedFile()));
+			addScene(new MapScene(this, "Map Scene",
+					svgFileChooser.getSelectedFile()));
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

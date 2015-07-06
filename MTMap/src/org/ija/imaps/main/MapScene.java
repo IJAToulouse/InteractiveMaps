@@ -49,9 +49,6 @@ public class MapScene extends AbstractScene {
 
 	// Eléments SVG
 	private HashMap<String, Rect> elements;
-
-	// Activation de la sortie braille
-	public static boolean brailleOnline;
 	
 	private MapContainer container;
 
@@ -94,12 +91,11 @@ public class MapScene extends AbstractScene {
 			e.printStackTrace();
 		}
 
-		// Convert XML file
-		File file = new File(svgFile.getPath().replace(".svg", ".xml"));
+		// Binding XML
 		JAXBContext jaxbContext = JAXBContext.newInstance(Config.class);
 
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		conf = (Config) jaxbUnmarshaller.unmarshal(file);
+		conf = (Config) jaxbUnmarshaller.unmarshal(new File(svgFile.getPath().replace(".svg", ".xml")));
 
 		// Add filters and POI to context
 		ApplicationContext.setFilters(conf.getFilterss().getFilterss());
