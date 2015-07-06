@@ -106,7 +106,7 @@ public class ApplicationContext {
 		if (algo.isRunning()) {
 			algo.stopRunning();
 			finger = null;
-			SAPI5Player.getInstance().stopAndSpeak("Guidage terminé.");
+			SAPI5Player.getInstance().play("Guidage terminé.");
 		}
 	}
 }

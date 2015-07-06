@@ -15,25 +15,21 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.ija.tools.media.MP3Player;
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.visibleComponents.widgets.MTBackgroundImage;
-import org.mt4j.input.IMTInputEventListener;
-import org.mt4j.input.inputData.AbstractCursorInputEvt;
-import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
 import org.xml.sax.SAXException;
 
 import processing.core.PImage;
-import code.algorithm.XYGuidanceAlgorithm;
 import code.conf.Config;
 import code.model.ApplicationContext;
 import code.model.POI;
-import code.model.gui.MapContainer;
 import code.model.gui.GraphicalPOI;
+import code.model.gui.MapContainer;
 import code.model.gui.Menu;
 import code.parsing.config.Rect;
 import code.parsing.parser.SVGParser;
@@ -70,10 +66,10 @@ public class MapScene extends AbstractScene {
 		ApplicationContext.setScene(this);
 
 		// Register players
-		ApplicationContext.registerSoundPlayers(MusicPlayer.getInstance(),
+		ApplicationContext.registerSoundPlayers(MP3Player.getInstance(),
 				SAPI5Player.getInstance());
 		
-		MusicPlayer.getInstance().setRootDirectory(svgFile.getParent());
+		MP3Player.getInstance().setRootDirectory(svgFile.getParent());
 
 		// Chargement des propriétés
 		Properties properties = new Properties();

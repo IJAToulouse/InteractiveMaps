@@ -22,25 +22,25 @@ public class MainMenu extends AbstractMenu<Filter> {
 
 	@Override
 	protected void menuDown() {
-		SAPI5Player.getInstance().stopAndSpeak(
+		SAPI5Player.getInstance().play(
 				menuItem.get(currentIndex).getName());
 	}
 
 	@Override
 	protected void menuUp() {
-		SAPI5Player.getInstance().stopAndSpeak(
+		SAPI5Player.getInstance().play(
 				menuItem.get(currentIndex).getName());
 	}
 
 	@Override
 	protected void menuGet() {
-		SAPI5Player.getInstance().stopAndSpeak(
+		SAPI5Player.getInstance().play(
 				menuItem.get(currentIndex).getName());
 	}
 
 	@Override
 	protected void menuSelect() {
-		SAPI5Player.getInstance().stopAndSpeak(
+		SAPI5Player.getInstance().play(
 				menuItem.get(currentIndex).getName() + " " + "sélectionné");
 
 		ApplicationContext.setCurrentFilter(menuItem

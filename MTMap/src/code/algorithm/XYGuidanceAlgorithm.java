@@ -57,7 +57,7 @@ public class XYGuidanceAlgorithm extends Thread {
 						}
 
 						else {
-							SAPI5Player.getInstance().stopAndSpeak(
+							SAPI5Player.getInstance().play(
 									"Bravo vous avez trouvé!");
 							isRunning = false;
 						}
