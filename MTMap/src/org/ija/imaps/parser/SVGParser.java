@@ -2,6 +2,7 @@ package org.ija.imaps.parser;
 
 import org.ija.imaps.gui.shape.EllipsePOI;
 import org.ija.imaps.gui.shape.GraphicalPOI;
+import org.ija.imaps.gui.shape.PolygonPOI;
 import org.ija.imaps.gui.shape.RectanglePOI;
 import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.POI;
@@ -19,6 +20,8 @@ public class SVGParser extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) {
 
+		String id = attributes.getValue("id");
+
 		// Balise svg?
 		if (qName == "svg") {
 			ApplicationContext.setSvgWidht(Float.parseFloat(attributes
@@ -28,31 +31,51 @@ public class SVGParser extends DefaultHandler {
 		}
 
 		// Balises rect?
-		else if (qName == "rect") {
-			if (attributes.getValue("id") != null) {
-				POI poi = ApplicationContext.getPOI(attributes.getValue("id"));
-				if (poi == null) {
-					System.out.println("Id " + attributes.getValue("id")
-							+ " non présent dans le fichier xml");
-				} else {
-					GraphicalPOI gpoi = createRectangle(attributes, poi);
-					poi.setGraphicalPOI(gpoi);
-				}
+		else if (qName == "rect" && id != null) {
+
+			POI poi = ApplicationContext.getPOI(id);
+			if (poi == null) {
+				System.out.println("Id " + id
+						+ " non présent dans le fichier xml");
+			} else {
+				GraphicalPOI gpoi = createRectangle(attributes, poi);
+				poi.setGraphicalPOI(gpoi);
 			}
 		}
-		
+
+		// Balises ellipse?
+		else if (qName == "ellipse" && id != null) {
+			POI poi = ApplicationContext.getPOI(id);
+			if (poi == null) {
+				System.out.println("Id " + id
+						+ " non présent dans le fichier xml");
+			} else {
+				GraphicalPOI gpoi = createEllipse(attributes, poi);
+				poi.setGraphicalPOI(gpoi);
+			}
+		}
+
+		// Balises ellipse?
+		else if (qName == "circle" && id != null) {
+			POI poi = ApplicationContext.getPOI(id);
+			if (poi == null) {
+				System.out.println("Id " + id
+						+ " non présent dans le fichier xml");
+			} else {
+				GraphicalPOI gpoi = createCircle(attributes, poi);
+				poi.setGraphicalPOI(gpoi);
+			}
+		}
+
 		// Balises rect?
-		else if (qName == "ellipse") {
-			String id = attributes.getValue("id");
-			if (id != null && id.startsWith("poi")) {
-				POI poi = ApplicationContext.getPOI(id);
-				if (poi == null) {
-					System.out.println("Id " + id
-							+ " non présent dans le fichier xml");
-				} else {
-					GraphicalPOI gpoi = createEllipse(attributes, poi);
-					poi.setGraphicalPOI(gpoi);
-				}
+		else if (qName == "path" && id != null) {
+			POI poi = ApplicationContext.getPOI(id);
+			if (poi == null) {
+				System.out.println("Id " + id
+						+ " non présent dans le fichier xml");
+			} else {
+				GraphicalPOI gpoi = createPolygon(attributes, poi);
+				poi.setGraphicalPOI(gpoi);
 			}
 		}
 	}
@@ -71,11 +94,22 @@ public class SVGParser extends DefaultHandler {
 				Float.parseFloat(attributes.getValue("x")),
 				Float.parseFloat(attributes.getValue("y")), poi);
 	}
-	
+
 	private static GraphicalPOI createEllipse(Attributes attributes, POI poi) {
 		return new EllipsePOI(Float.parseFloat(attributes.getValue("cx")),
 				Float.parseFloat(attributes.getValue("cy")),
 				Float.parseFloat(attributes.getValue("rx")),
 				Float.parseFloat(attributes.getValue("ry")), poi);
+	}
+
+	private static GraphicalPOI createCircle(Attributes attributes, POI poi) {
+		return new EllipsePOI(Float.parseFloat(attributes.getValue("cx")),
+				Float.parseFloat(attributes.getValue("cy")),
+				Float.parseFloat(attributes.getValue("r")),
+				Float.parseFloat(attributes.getValue("r")), poi);
+	}
+	
+	private static GraphicalPOI createPolygon(Attributes attributes, POI poi) {
+		return new PolygonPOI(attributes.getValue("d"), poi);
 	}
 }
