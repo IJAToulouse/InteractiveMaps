@@ -1,7 +1,10 @@
 package org.ija.imaps.model;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.ija.imaps.algorithm.XYGuidanceAlgorithm;
 import org.ija.tools.SoundPlayer;
@@ -17,9 +20,27 @@ public class ApplicationContext {
 	private static POI currentPOI;
 	private static List<Filter> filters;
 	private static AbstractScene scene;
-	private static List<POI> pois;
+	private static Map<String, POI> pois = new HashMap<String, POI>();
 	private static Vector3D finger;
 	private static XYGuidanceAlgorithm algo;
+	private static Float svgWidht;
+	private static Float svgHeight;
+
+	public static Float getSvgWidht() {
+		return svgWidht;
+	}
+
+	public static void setSvgWidht(Float svgWidht) {
+		ApplicationContext.svgWidht = svgWidht;
+	}
+
+	public static Float getSvgHeight() {
+		return svgHeight;
+	}
+
+	public static void setSvgHeight(Float svgHeight) {
+		ApplicationContext.svgHeight = svgHeight;
+	}
 
 	public static boolean isInteractive() {
 		return filter != null;
@@ -64,12 +85,16 @@ public class ApplicationContext {
 		ApplicationContext.filters = filters;
 	}
 
-	public static List<POI> getPOIs() {
-		return pois;
+	public static Collection<POI> getPOIs() {
+		return pois.values();
 	}
 
-	public static void setPOIs(List<POI> pois) {
-		ApplicationContext.pois = pois;
+	public static void addPOI(String id, POI poi) {
+		pois.put(id, poi);
+	}
+
+	public static POI getPOI(String id) {
+		return pois.get(id);
 	}
 
 	public static void setGuidanceNewTarget(POI poi) {

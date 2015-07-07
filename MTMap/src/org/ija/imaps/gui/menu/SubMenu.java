@@ -1,4 +1,4 @@
-package org.ija.imaps.gui;
+package org.ija.imaps.gui.menu;
 
 import java.util.ArrayList;
 import java.util.Collections;

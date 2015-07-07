@@ -3,36 +3,27 @@ package org.ija.imaps.model;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "filter")
+@XmlRootElement
 public class Filter {
 
+	@XmlAttribute	
 	private String id;
+	
+	@XmlAttribute
 	private String name;
+	
+	@XmlAttribute
 	private boolean expandable;
 
-	@XmlAttribute
-	public void setId(String id) {
-		this.id = id;
-	}
 
 	public String getId() {
 		return id;
-	}
-
-	@XmlAttribute
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getName() {
 		return name;
 	}
 	
-	@XmlAttribute
-	public void setExpandable(boolean expandable) {
-		this.expandable = expandable;
-	}
-
 	public boolean getExpandable() {
 		return expandable;
 	}

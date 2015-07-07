@@ -1,117 +1,81 @@
 package org.ija.imaps.parser;
 
-import java.util.HashMap;
-
-import org.ija.imaps.parser.config.Rect;
+import org.ija.imaps.gui.shape.EllipsePOI;
+import org.ija.imaps.gui.shape.GraphicalPOI;
+import org.ija.imaps.gui.shape.RectanglePOI;
+import org.ija.imaps.model.ApplicationContext;
+import org.ija.imaps.model.POI;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
-/**
-* @author Alexis Paoleschi
-* @mail alexis.paoleschi@gmail.com
-*/
-
-//Classe du parser des fichiers SVG
-//Le parsing se fait de manière évènementielle, à chaque ouverture de balise, la méthode "startElement" est appelée
-//et à chaque fermeture de balise, la méthode "endElement" est appelée
 public class SVGParser extends DefaultHandler {
-	//Eléments à retourner
-	HashMap<String, Rect> elements;
-	//Taille de l'image
-	HashMap<String, Double> imgSize;
-	//Buffer de l'élément courant
-	Rect currentRect;
-	
+
 	public SVGParser() {
 		super();
-		this.elements = new HashMap<String, Rect>();
-		this.imgSize = new HashMap<String, Double>();
-		this.currentRect = new Rect();
 	}
 
-	//Méthode appelée lors de l'ouverture d'une balise
-	public void startElement(String uri, String localName, String qName, Attributes attributes) {
-		//Traitement des balises "svg" => balise donnant les informations principales sur l'image SVG
-		if(qName == "svg") {
-			//Parcours des attributs
-			for(int n=0; n<attributes.getLength(); n++) {
-				//Traitement de l'attribut de la largeur de l'image
-				if(attributes.getQName(n) == "width") {
-					imgSize.put("width", Double.parseDouble(attributes.getValue(n)));
-				}
-				
-				//Traitement de l'attribut de la hauteur de l'image
-				if(attributes.getQName(n) == "height") {
-					imgSize.put("height", Double.parseDouble(attributes.getValue(n)));
+	// Méthode appelée lors de l'ouverture d'une balise
+	public void startElement(String uri, String localName, String qName,
+			Attributes attributes) {
+
+		// Balise svg?
+		if (qName == "svg") {
+			ApplicationContext.setSvgWidht(Float.parseFloat(attributes
+					.getValue("width")));
+			ApplicationContext.setSvgHeight(Float.parseFloat(attributes
+					.getValue("height")));
+		}
+
+		// Balises rect?
+		else if (qName == "rect") {
+			if (attributes.getValue("id") != null) {
+				POI poi = ApplicationContext.getPOI(attributes.getValue("id"));
+				if (poi == null) {
+					System.out.println("Id " + attributes.getValue("id")
+							+ " non présent dans le fichier xml");
+				} else {
+					GraphicalPOI gpoi = createRectangle(attributes, poi);
+					poi.setGraphicalPOI(gpoi);
 				}
 			}
 		}
 		
-		//Traitement des balises "rect" => balise des éléments dont certains nous intéressent
-		if(qName == "rect") {
-			//Parcours des attributs et stockage des informations dans le buffer
-			for(int i=0; i<attributes.getLength(); i++) {
-				//Traitement de l'attribut de l'ID de l'élément
-				if(attributes.getQName(i) == "id") {
-					currentRect.setId(attributes.getValue(i));
-				}
-				
-				//Traitement de l'attribut de la largeur de l'élément
-				if(attributes.getQName(i) == "width") {
-					currentRect.setWidth(Double.parseDouble(attributes.getValue(i)));
-				}
-
-				//Traitement de l'attribut de la hauteur de l'élément
-				if(attributes.getQName(i) == "height") {
-					currentRect.setHeight(Double.parseDouble(attributes.getValue(i)));
-				}
-				
-				//Traitement de l'attribut de la coordonnée X de l'élément
-				if(attributes.getQName(i) == "x") {
-					currentRect.setX(Double.parseDouble(attributes.getValue(i)));
-				}
-				
-				//Traitement de l'attribut de la coordonnée Y de l'élément
-				if(attributes.getQName(i) == "y") {
-					currentRect.setY(Double.parseDouble(attributes.getValue(i)));
+		// Balises rect?
+		else if (qName == "ellipse") {
+			String id = attributes.getValue("id");
+			if (id != null && id.startsWith("poi")) {
+				POI poi = ApplicationContext.getPOI(id);
+				if (poi == null) {
+					System.out.println("Id " + id
+							+ " non présent dans le fichier xml");
+				} else {
+					GraphicalPOI gpoi = createEllipse(attributes, poi);
+					poi.setGraphicalPOI(gpoi);
 				}
 			}
 		}
 	}
 
-	//Méthode appelée lors de la fermeture d'une balise
-	public void endElement(String uri, String localName, String qName) {
-		//Traitement des balises "rect" => balise des éléments dont certains nous intéressent
-		if(qName == "rect") {
-			//Création de l'élément dans la HashMap à partir du buffer
-			elements.put(qName + new String(String.valueOf(elements.size())), currentRect);
-			//Remise à zéro du buffer
-			currentRect = new Rect();
-		}
-	}
-	
 	public void warning(SAXParseException e) {
-		System.err.println("Attention : "+e.getMessage());
+		System.err.println("Attention : " + e.getMessage());
 	}
-	
+
 	public void error(SAXParseException e) {
-		System.err.println("Erreur : "+e.getMessage());
+		System.err.println("Erreur : " + e.getMessage());
+	}
+
+	private static GraphicalPOI createRectangle(Attributes attributes, POI poi) {
+		return new RectanglePOI(Float.parseFloat(attributes.getValue("width")),
+				Float.parseFloat(attributes.getValue("height")),
+				Float.parseFloat(attributes.getValue("x")),
+				Float.parseFloat(attributes.getValue("y")), poi);
 	}
 	
-	//On ne modifie pas la méthode characters qui ne fait rien par défaut car on n'a pas de texte entre les balises en SVG
-	//On conserve l'implémentation par défaut de fatalError qui propage l'erreur
-
-	//Les différents accesseurs nous permettront de récupérer les données
-	public HashMap<String, Rect> getElements() {
-		return elements;
-	}
-
-	public Rect getCurrentRect() {
-		return currentRect;
-	}
-
-	public HashMap<String, Double> getImgSize() {
-		return imgSize;
+	private static GraphicalPOI createEllipse(Attributes attributes, POI poi) {
+		return new EllipsePOI(Float.parseFloat(attributes.getValue("cx")),
+				Float.parseFloat(attributes.getValue("cy")),
+				Float.parseFloat(attributes.getValue("rx")),
+				Float.parseFloat(attributes.getValue("ry")), poi);
 	}
 }

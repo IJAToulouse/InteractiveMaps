@@ -1,4 +1,4 @@
-package org.ija.imaps.configuration;
+package org.ija.imaps.model.configuration;
 
 import java.util.List;
 
