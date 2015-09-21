@@ -98,7 +98,9 @@ public class ApplicationContext {
 	}
 
 	public static void setGuidanceNewTarget(POI poi) {
-		// TODO avoir si nécessaire
+		if (algo.isRunning()) {
+			algo.stopRunning();
+		}
 		currentPOI = poi;
 		algo.setTarget(poi.getGlobalPosition());
 		finger = null;

@@ -12,52 +12,45 @@ public class SubMenu extends AbstractMenu<POIAction> {
 
 	public SubMenu(int width, int height, int x, int y) {
 		super(width, height, x, y);
+		textVisible(false);
 	}
 
 	public void down() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
-			currentIndex++;
-			currentIndex = currentIndex % menuItem.size();
-			menuDown();
+			super.down();
 		} else {
-			SAPI5Player.getInstance().play(
-					"Aucun sous-menu pour ce filtre");
+			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
-	}
-	
-	@Override
-	protected void menuDown() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getData());
 	}
 
 	public void up() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
-			currentIndex--;
-			if (currentIndex < 0) {
-				currentIndex = menuItem.size() - 1;
-			}
+			super.up();
 			menuUp();
 		} else {
-			SAPI5Player.getInstance().play(
-					"Aucun sous-menu pour ce filtre");
+			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
 	}
 
 	@Override
+	protected void menuDown() {
+		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getData());
+		updateText(menuItem.get(currentIndex).getData());
+	}
+
+	@Override
 	protected void menuUp() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getData());
+		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getData());
+		updateText(menuItem.get(currentIndex).getData());
 	}
 
 	@Override
 	protected void menuGet() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
-			SAPI5Player.getInstance().play(
-					menuItem.get(currentIndex).getData());
+			SAPI5Player.getInstance()
+					.play(menuItem.get(currentIndex).getData());
 		} else {
-			SAPI5Player.getInstance().play(
-					"Aucun sous-menu pour ce filtre");
+			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
 	}
 
@@ -65,12 +58,12 @@ public class SubMenu extends AbstractMenu<POIAction> {
 	protected void menuSelect() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
 			SAPI5Player.getInstance().play(
-					"Glisser un doigt sur la carte pour trouvé"
+					"Glisser un doigt sur la carte pour trouver"
 							+ menuItem.get(currentIndex).getData());
+			updateText(menuItem.get(currentIndex).getData());
 			ApplicationContext.setGuidanceNewTarget(findPOI());
 		} else {
-			SAPI5Player.getInstance().play(
-					"Aucun sous-menu pour ce filtre");
+			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
 	}
 
@@ -85,6 +78,7 @@ public class SubMenu extends AbstractMenu<POIAction> {
 
 	public void reset() {
 		currentIndex = 0;
+		selectedIndex = -1;
 
 		// Get POIs for current filter
 		menuItem = new ArrayList<POIAction>();
@@ -98,8 +92,13 @@ public class SubMenu extends AbstractMenu<POIAction> {
 				}
 			}
 			Collections.sort(menuItem);
-			System.out.println(menuItem);
+			updateText(menuItem.get(currentIndex).getData());
+			setTextVisible(true);
 		}
+	}
+
+	public void setTextVisible(boolean bool) {
+		textVisible(bool);
 	}
 
 }

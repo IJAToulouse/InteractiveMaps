@@ -77,11 +77,18 @@ public class SAPI5Player implements SoundPlayer {
 	public static void main(String args[]) throws AudioException,
 			EngineStateError, InterruptedException {
 
-		SAPI5Player.getInstance().play("Ceci est un test");
-		SAPI5Player.getInstance().test("Ceci est un test");
-		Thread.sleep(200);
-		SAPI5Player.getInstance().stop();
-		SAPI5Player.getInstance().play("Ceci est un test");
+		Voice voice = null;
+		Voice voice2 = new Voice();
+		EngineList list = Central.availableSynthesizers(null);
+		SynthesizerModeDesc desc = null;
+		for (int i = 0; voice == null && i < list.size(); i++) {
+			desc = (SynthesizerModeDesc) list.elementAt(i);
+			System.out.println(desc.getModeName());
+			System.out.println(desc.getEngineName());
+			for (Voice vo : desc.getVoices()) {
+				System.out.println(vo);
+			}
+		}
 	}
 
 	private void test(String string) {

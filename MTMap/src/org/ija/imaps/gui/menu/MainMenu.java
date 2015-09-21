@@ -7,7 +7,7 @@ import org.ija.imaps.model.Filter;
 import org.ija.tools.tts.SAPI5Player;
 
 public class MainMenu extends AbstractMenu<Filter> {
-	
+
 	private SubMenu submenu;
 
 	public MainMenu(int width, int height, int x, int y, SubMenu submenu) {
@@ -16,35 +16,44 @@ public class MainMenu extends AbstractMenu<Filter> {
 
 		// Get filters
 		menuItem = new ArrayList<Filter>(ApplicationContext.getFilters());
+		updateText(menuItem.get(currentIndex).getName());
 		this.submenu = submenu;
 	}
 
 	@Override
 	protected void menuDown() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getName());
+		playAndUpdateText(menuItem.get(currentIndex).getName());
+		submenu.setTextVisible(menuItem.get(currentIndex).getExpandable()
+				&& isItemSelected());
 	}
 
 	@Override
 	protected void menuUp() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getName());
+		playAndUpdateText(menuItem.get(currentIndex).getName());
+		submenu.setTextVisible(menuItem.get(currentIndex).getExpandable()
+				&& isItemSelected());
 	}
 
 	@Override
 	protected void menuGet() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getName());
+		play(menuItem.get(currentIndex).getName());
 	}
 
 	@Override
 	protected void menuSelect() {
-		SAPI5Player.getInstance().play(
-				menuItem.get(currentIndex).getName() + " " + "sélectionné");
+		play(menuItem.get(currentIndex).getName() + " " + "sélectionné");
+		updateText(menuItem.get(currentIndex).getName());
 
-		ApplicationContext.setCurrentFilter(menuItem
-				.get(currentIndex));
-		
+		ApplicationContext.setCurrentFilter(menuItem.get(currentIndex));
 		submenu.reset();
+	}
+
+	private void playAndUpdateText(String text) {
+		updateText(text);
+		play(text);
+	}
+
+	private void play(String text) {
+		SAPI5Player.getInstance().play(text);
 	}
 }

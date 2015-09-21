@@ -3,14 +3,24 @@ package org.ija.imaps.gui.menu;
 import java.util.List;
 
 import org.ija.imaps.model.ApplicationContext;
+import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
+import org.mt4j.components.visibleComponents.widgets.MTTextArea;
+import org.mt4j.input.gestureAction.DefaultScaleAction;
+import org.mt4j.input.gestureAction.DefaultZoomAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
+import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
+import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.util.MTColor;
+import org.mt4j.util.font.FontManager;
+import org.mt4j.util.font.IFont;
 import org.mt4j.util.math.Vector3D;
 
 import processing.core.PImage;
@@ -18,7 +28,11 @@ import processing.core.PImage;
 public abstract class AbstractMenu<E> extends MTRectangle {
 
 	protected int currentIndex;
+	protected int selectedIndex;
+	
 	protected List<E> menuItem;
+	
+	private MTTextArea textArea;
 
 	public AbstractMenu(int width, int height, int x, int y) {
 
@@ -27,6 +41,7 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 
 		// Default values
 		currentIndex = 0;
+		selectedIndex = 0;
 
 		ApplicationContext.clearAllGestures(this);
 		ApplicationContext.getScene().getCanvas().addChild(this);
@@ -72,6 +87,23 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 				return false;
 			}
 		});
+
+		IFont fontArial = FontManager.getInstance().createFont(
+				ApplicationContext.getScene().getMTApplication(), "arial.ttf",
+				25, // Font size
+				MTColor.WHITE); // Font color
+
+		textArea = new MTTextArea(ApplicationContext.getScene()
+				.getMTApplication(), 10, 10, width-20, 70, fontArial);
+		ApplicationContext.clearAllGestures(textArea);
+
+		textArea.setNoStroke(false);
+		textArea.setStrokeColor(MTColor.GREEN);
+		textArea.setStrokeWeight(4);
+		textArea.setNoFill(false);
+		textArea.setFillColor(MTColor.BLACK);
+
+		this.addChild(textArea);
 	}
 
 	public void down() {
@@ -93,9 +125,30 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 	}
 
 	public void select() {
+		selectedIndex = currentIndex;
 		menuSelect();
 	}
+	
+	public boolean isItemSelected() {
+		return (currentIndex==selectedIndex);
+	}
+	
+	public void updateText(String text) {
+		
+		if (isItemSelected()) {
+			textArea.setNoStroke(false);
+			textArea.setStrokeColor(MTColor.GREEN);
+			textArea.setStrokeWeight(3);
+		} else {
+			textArea.setNoStroke(true);
+		}
+		textArea.setText(text);
+	}
 
+	public void textVisible(boolean bool) {
+		textArea.setVisible(bool);
+	}
+	
 	protected abstract void menuDown();
 
 	protected abstract void menuUp();
