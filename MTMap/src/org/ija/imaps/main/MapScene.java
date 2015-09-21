@@ -59,6 +59,9 @@ public class MapScene extends AbstractScene {
 		} finally {
 			fileStream.close();
 		}
+		
+		// Set params
+		SAPI5Player.setTTSSpeed(properties.getProperty("tts_speed"));
 
 		// On peint le fond de la scène en blanc
 		setClearColor(new MTColor(255, 255, 255, 255));

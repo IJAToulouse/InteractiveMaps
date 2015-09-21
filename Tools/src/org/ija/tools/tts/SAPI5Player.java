@@ -14,6 +14,7 @@ import org.ija.tools.SoundPlayer;
 public class SAPI5Player implements SoundPlayer {
 
 	private Synthesizer synth = null;
+	private static Float ttsSpeed = 190.0f;
 
 	/** Constructeur privé */
 	private SAPI5Player() {
@@ -39,7 +40,7 @@ public class SAPI5Player implements SoundPlayer {
 			synth.waitEngineState(Synthesizer.ALLOCATED);
 
 			SynthesizerProperties props = synth.getSynthesizerProperties();
-			props.setSpeakingRate(210.0f);
+			props.setSpeakingRate(ttsSpeed);
 			props.setVoice(voice);
 
 		} catch (Exception e) {
@@ -57,18 +58,20 @@ public class SAPI5Player implements SoundPlayer {
 	public static SAPI5Player getInstance() {
 		return SAPI5PlayerHolder.instance;
 	}
-	
+
 	public void play(String text) {
 		synth.cancelAll();
+		synth.getSynthesizerProperties().setSpeakingRate(ttsSpeed);
 		synth.speakPlainText(text, null);
 	}
-	
+
 	public void speakIfReady(String text) {
 		if (!synth.enumerateQueue().hasMoreElements()) {
+			synth.getSynthesizerProperties().setSpeakingRate(ttsSpeed);
 			synth.speakPlainText(text, null);
 		}
 	}
-	
+
 	@Override
 	public void stop() {
 		synth.cancelAll();
@@ -93,18 +96,24 @@ public class SAPI5Player implements SoundPlayer {
 
 	private void test(String string) {
 		System.out.println(synth.enumerateQueue().hasMoreElements());
-		
+
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	public static void setTTSSpeed(String speed) {
+		if (speed != null) {
+			ttsSpeed = Float.valueOf(speed);
+		}
 	}
 }
