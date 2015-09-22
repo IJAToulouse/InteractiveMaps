@@ -44,7 +44,6 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 		selectedIndex = 0;
 
 		ApplicationContext.clearAllGestures(this);
-		ApplicationContext.getScene().getCanvas().addChild(this);
 
 		setPositionGlobal(new Vector3D(x, y, 0));
 		registerInputProcessor(new FlickProcessor(300, 5));

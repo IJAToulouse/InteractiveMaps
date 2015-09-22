@@ -89,6 +89,10 @@ public class ApplicationContext {
 		return pois.values();
 	}
 
+	public static void removeAllPOIs() {
+		pois.clear();
+	}
+	
 	public static void addPOI(String id, POI poi) {
 		pois.put(id, poi);
 	}

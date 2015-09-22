@@ -6,8 +6,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ija.imaps.gui.MapContainer;
 import org.ija.imaps.gui.shape.GraphicalPOI;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.util.math.Vector3D;
 
 @XmlRootElement
@@ -68,7 +68,7 @@ public class POI {
 		gpoi.sendToFront();
 	}
 
-	public void addToParent(MapContainer container) {
+	public void addToParent(MTRectangle container) {
 		container.addChild(gpoi.getShape());
 	}
 
