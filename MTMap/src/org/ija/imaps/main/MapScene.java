@@ -1,5 +1,7 @@
 package org.ija.imaps.main;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -112,6 +114,24 @@ public class MapScene extends AbstractScene {
 		this.getCanvas().addChild(hud);
 
 		menu = new Menu();
+		
+		app.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+					hud.setVisible(!hud.isVisible());
+				}
+			}
+		});
 	}
 
 	private void addNewMap(File svgFile) {
@@ -265,7 +285,7 @@ public class MapScene extends AbstractScene {
 			UnistrokeProcessor up = new UnistrokeProcessor(ApplicationContext
 					.getScene().getMTApplication());
 			up.addTemplate(UnistrokeGesture.DELETE, Direction.CLOCKWISE);
-			up.addTemplate(UnistrokeGesture.CIRCLE, Direction.COUNTERCLOCKWISE);
+			//up.addTemplate(UnistrokeGesture.CIRCLE, Direction.COUNTERCLOCKWISE);
 
 			registerInputProcessor(up);
 			addGestureListener(UnistrokeProcessor.class,
