@@ -3,12 +3,12 @@ package org.ija.imaps.gui.menu;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.ija.imaps.model.Action;
 import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.POI;
-import org.ija.imaps.model.POIAction;
 import org.ija.tools.tts.SAPI5Player;
 
-public class SubMenu extends AbstractMenu<POIAction> {
+public class SubMenu extends AbstractMenu<Action> {
 
 	public SubMenu(int width, int height, int x, int y) {
 		super(width, height, x, y);
@@ -34,21 +34,21 @@ public class SubMenu extends AbstractMenu<POIAction> {
 
 	@Override
 	protected void menuDown() {
-		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getData());
-		updateText(menuItem.get(currentIndex).getData());
+		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getValue());
+		updateText(menuItem.get(currentIndex).getValue());
 	}
 
 	@Override
 	protected void menuUp() {
-		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getData());
-		updateText(menuItem.get(currentIndex).getData());
+		SAPI5Player.getInstance().play(menuItem.get(currentIndex).getValue());
+		updateText(menuItem.get(currentIndex).getValue());
 	}
 
 	@Override
 	protected void menuGet() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
 			SAPI5Player.getInstance()
-					.play(menuItem.get(currentIndex).getData());
+					.play(menuItem.get(currentIndex).getValue());
 		} else {
 			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
@@ -59,8 +59,8 @@ public class SubMenu extends AbstractMenu<POIAction> {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
 			SAPI5Player.getInstance().play(
 					"Glisser un doigt sur la carte pour trouver"
-							+ menuItem.get(currentIndex).getData());
-			updateText(menuItem.get(currentIndex).getData());
+							+ menuItem.get(currentIndex).getValue());
+			updateText(menuItem.get(currentIndex).getValue());
 			ApplicationContext.setGuidanceNewTarget(findPOI());
 		} else {
 			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
@@ -69,7 +69,7 @@ public class SubMenu extends AbstractMenu<POIAction> {
 
 	private POI findPOI() {
 		for (POI poi : ApplicationContext.getPOIs()) {
-			if (poi.getActions().containsValue(menuItem.get(currentIndex))) {
+			if (poi.getActions().contains(menuItem.get(currentIndex))) {
 				return poi;
 			}
 		}
@@ -81,18 +81,19 @@ public class SubMenu extends AbstractMenu<POIAction> {
 		selectedIndex = -1;
 
 		// Get POIs for current filter
-		menuItem = new ArrayList<POIAction>();
+		menuItem = new ArrayList<Action>();
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
 
 			String filterId = ApplicationContext.getCurrentFilter().getId();
 
 			for (POI poi : ApplicationContext.getPOIs()) {
-				if (poi.getActions().containsKey(filterId)) {
-					menuItem.add(poi.getActions().get(filterId));
+				Action temp = poi.getAction(filterId);
+				if (temp!=null) {
+					menuItem.add(temp);
 				}
 			}
 			Collections.sort(menuItem);
-			updateText(menuItem.get(currentIndex).getData());
+			updateText(menuItem.get(currentIndex).getValue());
 			setTextVisible(true);
 		}
 	}

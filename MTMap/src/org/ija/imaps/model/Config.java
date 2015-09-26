@@ -1,4 +1,4 @@
-package org.ija.imaps.model.configuration;
+package org.ija.imaps.model;
 
 import java.util.List;
 
@@ -6,9 +6,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.ija.imaps.model.Filter;
-import org.ija.imaps.model.POI;
 
 @XmlRootElement
 public class Config {

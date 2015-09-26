@@ -3,9 +3,9 @@ package org.ija.imaps.gui.shape;
 import java.util.Map;
 
 import org.ija.imaps.listener.DoubleTapListener;
+import org.ija.imaps.model.Action;
 import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.POI;
-import org.ija.imaps.model.POIAction;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
@@ -34,8 +34,8 @@ public abstract class GraphicalPOI {
 		DoubleTapListener listener = new DoubleTapListener();
 
 		// For each actions
-		for (Map.Entry<String, POIAction> entry : poi.getActions().entrySet()) {
-			listener.addFilteredAction(entry.getKey(), entry.getValue());
+		for (Action action : poi.getActions()) {
+			listener.addFilteredAction(action.getFilter(), action);
 		}
 		shape.addGestureListener(TapProcessor.class, listener);
 	}

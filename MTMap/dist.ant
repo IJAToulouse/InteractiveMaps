@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project MTMap">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="D:/Dev/GitHub/InteractiveMaps/MTMap/dist/Accessimap.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="org.ija.imaps.main.StartMapScene"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="D:/Dev/GitHub/InteractiveMaps/MTMap/bin"/>
+            <fileset dir="D:/Dev/GitHub/InteractiveMaps/mt4j-core/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-core/lib/ani.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-core/lib/batik-css.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-core/lib/xml-apis-ext.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/core.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/jogl/jogl.jar"/>
+            <fileset dir="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/GlulogicMT.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/junit-4.8.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/mri.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-anim.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-awt-util.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-bridge.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-dom.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-ext.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-extension.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-gvt.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-parser.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-script.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-svg-dom.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-svggen.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-transcoder.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-util.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/batik-xml.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/js.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/pdf-transcoder.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/batik/xml-apis.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/whirlylib/log4j-1.2.8.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/whirlylib/whirlycache-1.0.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/extensions/lib/jbullet/jbullet.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/extensions/lib/jbullet/stack-alloc.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/extensions/lib/jbullet/vecmath.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/examples/advanced/flickrMT/lib/flickrj.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/examples/advanced/fluidSimulator/lib/MSAFluid.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/examples/advanced/modestMapsMT/lib/modestMaps.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/examples/advanced/physics/lib/jbox2d.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/examples/advanced/water/lib/waterScene.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/jogl/gluegen-rt.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/muito_blobtracking.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/tuio/tuio4j.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/tuio/tuio4jinput.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/mt4j-desktop/lib/jogl/opengl.jar"/>
+            <fileset dir="D:/Dev/GitHub/InteractiveMaps/Tools/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jaco-mp3-player-0.9.3.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/cgjsapi.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jmf.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/mp3plugin.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/basicplayer3.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/commons-logging-api.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/tritonus_share.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/mp3spi1.9.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jl1.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jogg-0.0.7.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jorbis-0.0.15.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/jspeex0.9.7.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/Tools/lib/vorbisspi1.0.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/bridj-0.6.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/commons-lang3-3.3.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/core-3.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/core.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/javase-3.2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/jdom-2.0.0.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/slf4j-api-1.7.2.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="D:/Dev/GitHub/InteractiveMaps/MTMap/jar/webcam-capture-0.3.10.jar"/>
+        </jar>
+    </target>
+</project>

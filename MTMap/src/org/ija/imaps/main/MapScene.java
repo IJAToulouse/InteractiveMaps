@@ -20,8 +20,8 @@ import javax.xml.parsers.SAXParserFactory;
 import org.ija.imaps.gui.CustomFileChooser;
 import org.ija.imaps.gui.menu.Menu;
 import org.ija.imaps.model.ApplicationContext;
+import org.ija.imaps.model.Config;
 import org.ija.imaps.model.POI;
-import org.ija.imaps.model.configuration.Config;
 import org.ija.imaps.parser.SVGParser;
 import org.ija.tools.media.MP3Player;
 import org.ija.tools.tts.SAPI5Player;
@@ -114,17 +114,17 @@ public class MapScene extends AbstractScene {
 		this.getCanvas().addChild(hud);
 
 		menu = new Menu();
-		
+
 		app.addKeyListener(new KeyListener() {
-			
+
 			@Override
 			public void keyTyped(KeyEvent e) {
 			}
-			
+
 			@Override
 			public void keyReleased(KeyEvent e) {
 			}
-			
+
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -285,7 +285,8 @@ public class MapScene extends AbstractScene {
 			UnistrokeProcessor up = new UnistrokeProcessor(ApplicationContext
 					.getScene().getMTApplication());
 			up.addTemplate(UnistrokeGesture.DELETE, Direction.CLOCKWISE);
-			//up.addTemplate(UnistrokeGesture.CIRCLE, Direction.COUNTERCLOCKWISE);
+			// up.addTemplate(UnistrokeGesture.CIRCLE,
+			// Direction.COUNTERCLOCKWISE);
 
 			registerInputProcessor(up);
 			addGestureListener(UnistrokeProcessor.class,
