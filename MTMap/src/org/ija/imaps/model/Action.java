@@ -3,28 +3,30 @@ package org.ija.imaps.model;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.ija.tools.media.MP3Player;
-import org.ija.tools.tts.SAPI5Player;
+import org.ija.imaps.controller.ActionController;
 
 @XmlRootElement
 public class Action implements Comparable<Action> {
-	
+
 	@XmlAttribute
 	String filter;
-	
+
 	@XmlAttribute
-	String protocol;
-	
+	Protocol protocol;
+
+	@XmlAttribute
+	Gesture gesture;
+
 	@XmlAttribute
 	String value;
 
 	public Action() {
 	}
 
-	public String getProtocol() {
+	public Protocol getProtocol() {
 		return protocol;
 	}
-	
+
 	public String getFilter() {
 		return filter;
 	}
@@ -33,23 +35,20 @@ public class Action implements Comparable<Action> {
 		return value;
 	}
 
-	public void launch() {
-		if (protocol.equalsIgnoreCase("TTS")) {
-			SAPI5Player.getInstance().play(value);
-		} else if (protocol.equalsIgnoreCase("MP3")) {
-			MP3Player.getInstance().play(value);
-		}
+	public Gesture getGesture() {
+		return gesture;
 	}
 
 	@Override
 	public int compareTo(Action poiAction) {
-		return value.toLowerCase().compareTo(poiAction.getValue().toLowerCase());
+		return value.toLowerCase()
+				.compareTo(poiAction.getValue().toLowerCase());
 	}
 
 	@Override
 	public String toString() {
 		return "Action [filter=" + filter + ", protocol=" + protocol
-				+ ", value=" + value + "]";
+				+ ", gesture=" + gesture + ", value=" + value + "]";
 	}
-	
+
 }

@@ -17,6 +17,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.ija.imaps.controller.ActionController;
 import org.ija.imaps.gui.CustomFileChooser;
 import org.ija.imaps.gui.menu.Menu;
 import org.ija.imaps.model.ApplicationContext;
@@ -83,7 +84,7 @@ public class MapScene extends AbstractScene {
 		SAPI5Player.setTTSSpeed(properties.getProperty("tts_speed"));
 
 		// Register players
-		ApplicationContext.registerSoundPlayers(MP3Player.getInstance(),
+		ActionController.registerSoundPlayers(MP3Player.getInstance(),
 				SAPI5Player.getInstance());
 
 		// On peint le fond de la scène en blanc
@@ -285,8 +286,6 @@ public class MapScene extends AbstractScene {
 			UnistrokeProcessor up = new UnistrokeProcessor(ApplicationContext
 					.getScene().getMTApplication());
 			up.addTemplate(UnistrokeGesture.DELETE, Direction.CLOCKWISE);
-			// up.addTemplate(UnistrokeGesture.CIRCLE,
-			// Direction.COUNTERCLOCKWISE);
 
 			registerInputProcessor(up);
 			addGestureListener(UnistrokeProcessor.class,

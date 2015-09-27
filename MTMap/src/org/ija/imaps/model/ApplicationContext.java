@@ -15,7 +15,6 @@ import org.mt4j.util.math.Vector3D;
 
 public class ApplicationContext {
 
-	private static List<SoundPlayer> players;
 	private static Filter filter;
 	private static POI currentPOI;
 	private static List<Filter> filters;
@@ -54,16 +53,6 @@ public class ApplicationContext {
 		ApplicationContext.filter = filter;
 	}
 
-	public static void registerSoundPlayers(SoundPlayer... players) {
-		ApplicationContext.players = Arrays.asList(players);
-	}
-
-	public static void stopSoundPlayers() {
-		for (SoundPlayer soundPlayer : players) {
-			soundPlayer.stop();
-		}
-	}
-
 	public static AbstractScene getScene() {
 		return scene;
 	}
@@ -92,7 +81,7 @@ public class ApplicationContext {
 	public static void removeAllPOIs() {
 		pois.clear();
 	}
-	
+
 	public static void addPOI(String id, POI poi) {
 		pois.put(id, poi);
 	}
