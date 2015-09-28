@@ -1,16 +1,22 @@
 package org.ija.tools.media;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayer;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 
 import org.ija.tools.SoundPlayer;
 
-public final class MP3Player implements SoundPlayer {
+public class MP3Player implements SoundPlayer {
 
 	private BasicPlayer player;
-	private String rootDirectory;
+	private String mapDirectory;
+	private String systemDirectory;
 
 	private MP3Player() {
 		player = new BasicPlayer();
@@ -23,12 +29,21 @@ public final class MP3Player implements SoundPlayer {
 	public static MP3Player getInstance() {
 		return MP3PlayerHolder.instance;
 	}
-	
-	public void setRootDirectory(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
+
+	public void setMapDirectory(String mapDirectory) {
+		this.mapDirectory = mapDirectory;
+	}
+
+	public void setSystemDirectory(String systemDirectory) {
+		this.systemDirectory = systemDirectory;
 	}
 
 	public void play(String mp3) {
+
+		File mp3File = new File(mapDirectory, mp3);
+		if (!mp3File.exists()) {
+			mp3File = new File(systemDirectory, mp3);
+		}
 
 		if (isBusy()) {
 			try {
@@ -40,10 +55,8 @@ public final class MP3Player implements SoundPlayer {
 		}
 
 		try {
-			long startTime = System.nanoTime();
-			player.open(new File(rootDirectory,mp3));
+			player.open(mp3File);
 			player.play();
-			System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
 		} catch (BasicPlayerException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -83,14 +96,28 @@ public final class MP3Player implements SoundPlayer {
 	}
 
 	public static void main(String[] args) {
-		MP3Player.getInstance().play("test");
-		try {
-			Thread.sleep(6000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		MP3Player.getInstance().play("test");
-	}
+		// long startTime = System.nanoTime();
+		// MP3Player.getInstance().setSystemDirectory("C:\\Accessimap\\sounds\\");
+		// MP3Player.getInstance().play("success.mp3");
+		// System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+		// startTime = System.nanoTime();
+		// MP3Player.getInstance().play("success.mp3");
+		// System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+		// MP3Player.getInstance().play();
 
+//		AdvancedPlayer player;
+//		try {
+//			long startTime = System.nanoTime();
+//			player = new AdvancedPlayer(new FileInputStream(
+//					"C:\\Accessimap\\sounds\\success.mp3"));
+//			player.play();
+//			System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JavaLayerException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
 }

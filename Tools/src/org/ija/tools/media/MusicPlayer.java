@@ -7,10 +7,11 @@ import java.io.File;
 import org.ija.tools.SoundPlayer;
 
 public final class MusicPlayer implements SoundPlayer {
-	
+
 	private MP3Player player;
-	private String rootDirectory;
-	
+	private String systemDirectory;
+	private String mapDirectory;
+
 	private MusicPlayer() {
 		player = new MP3Player();
 	}
@@ -25,10 +26,15 @@ public final class MusicPlayer implements SoundPlayer {
 
 	public void play(String mp3) {
 
+		File mp3File = new File(mapDirectory, mp3);
+		if (!mp3File.exists()) {
+			mp3File = new File(systemDirectory, mp3);
+		}
+
 		if (this.isBusy()) {
 			player.stop();
 		}
-		player = new MP3Player(new File(rootDirectory,mp3));
+		player = new MP3Player(mp3File);
 		player.play();
 	}
 
@@ -45,7 +51,9 @@ public final class MusicPlayer implements SoundPlayer {
 	public static void main(String[] args) {
 
 		MusicPlayer test = new MusicPlayer();
-		test.play("route.mp3");
+		long startTime = System.nanoTime();
+		test.play("C:\\Accessimap\\sounds\\success.mp3");
+		System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
 
 		while (test.isBusy()) {
 			try {
@@ -56,7 +64,9 @@ public final class MusicPlayer implements SoundPlayer {
 			}
 		}
 
-		test.play("route.mp3");
+		startTime = System.nanoTime();
+		test.play("C:\\Accessimap\\sounds\\success.mp3");
+		System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
 
 		while (test.isBusy()) {
 			try {
@@ -68,20 +78,24 @@ public final class MusicPlayer implements SoundPlayer {
 		}
 	}
 
-	public void setRootDirectory(String rootDirectory) {
-		this.rootDirectory = rootDirectory;
+	public void setMapDirectory(String mapDirectory) {
+		this.mapDirectory = mapDirectory;
+	}
+
+	public void setSystemDirectory(String systemDirectory) {
+		this.systemDirectory = systemDirectory;
 	}
 
 	@Override
 	public void pause() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

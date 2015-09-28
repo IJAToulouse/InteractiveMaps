@@ -10,7 +10,7 @@ public class StartMapScene extends MTApplication {
 	private static final long serialVersionUID = 1L;
 
 	public static void main(String[] args) {
-
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e) {

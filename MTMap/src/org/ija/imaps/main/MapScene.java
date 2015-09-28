@@ -24,7 +24,7 @@ import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.Config;
 import org.ija.imaps.model.POI;
 import org.ija.imaps.parser.SVGParser;
-import org.ija.tools.media.MP3Player;
+import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.components.MTComponent;
@@ -82,9 +82,10 @@ public class MapScene extends AbstractScene {
 
 		// Set params
 		SAPI5Player.setTTSSpeed(properties.getProperty("tts_speed"));
+		MusicPlayer.getInstance().setSystemDirectory(properties.getProperty("accessimap_home")+"sounds");
 
 		// Register players
-		ActionController.registerSoundPlayers(MP3Player.getInstance(),
+		ActionController.registerSoundPlayers(MusicPlayer.getInstance(),
 				SAPI5Player.getInstance());
 
 		// On peint le fond de la scène en blanc
@@ -141,7 +142,7 @@ public class MapScene extends AbstractScene {
 		container.removeAllChildren();
 
 		// MP3 root directory
-		MP3Player.getInstance().setRootDirectory(svgFile.getParent());
+		MusicPlayer.getInstance().setMapDirectory(svgFile.getParent());
 
 		// Binding XML
 		try {
@@ -171,14 +172,6 @@ public class MapScene extends AbstractScene {
 		PImage image = getMTApplication().loadImage(
 				svgFile.getPath().replace(".svg", ".jpg"));
 
-		// Remove background if already exist and create the new one
-		if (backgroundImage != null) {
-			getCanvas().removeChild(backgroundImage);
-		}
-		backgroundImage = new MTBackgroundImage(getMTApplication(), image,
-				false);
-		getCanvas().addChild(backgroundImage);
-
 		// Parse svg file to find POIs
 		try {
 			SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -195,7 +188,16 @@ public class MapScene extends AbstractScene {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		// Remove background if already exist and create the new one
+		if (backgroundImage != null) {
+			getCanvas().removeChild(backgroundImage);
+		}
+		
+		backgroundImage = new MTBackgroundImage(getMTApplication(), image,
+				false);
+		getCanvas().addChild(backgroundImage);
+		
 		// Add POIs to container
 		for (POI poi : ApplicationContext.getPOIs()) {
 			poi.addToParent(container);
@@ -204,6 +206,8 @@ public class MapScene extends AbstractScene {
 		// Create menu and send container to front
 		menu.create();
 		container.sendToFront();
+		
+
 	}
 
 	private File getFileFromChooser() {
@@ -236,11 +240,17 @@ public class MapScene extends AbstractScene {
 					if (string.equals("flasher")) {
 						hud.setVisible(false);
 						addNewMap(getFileFromQrCode());
+						MusicPlayer.getInstance().play("success.mp3");
 					} else if (string.equals("rechercher")) {
 						File file = getFileFromChooser();
 						if (file != null) {
 							hud.setVisible(false);
+							long startTime = System.nanoTime();
 							addNewMap(file);
+							System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+							startTime = System.nanoTime();
+							MusicPlayer.getInstance().play("success.mp3");
+							System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
 						}
 					} else if (string.equals("quitter")) {
 						System.exit(0);
