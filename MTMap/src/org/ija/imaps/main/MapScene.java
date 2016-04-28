@@ -3,6 +3,7 @@ package org.ija.imaps.main;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,28 +18,32 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.ija.imaps.camera.CameraReader;
 import org.ija.imaps.controller.ActionController;
 import org.ija.imaps.gui.CustomFileChooser;
-import org.ija.imaps.gui.menu.Menu;
+import org.ija.imaps.gui.menu.MapMenu;
+import org.ija.imaps.gui.shape.RectanglePOI;
 import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.Config;
 import org.ija.imaps.model.POI;
 import org.ija.imaps.parser.SVGParser;
+import org.ija.imaps.screen.ScreenManager;
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.components.MTComponent;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.widgets.MTBackgroundImage;
 import org.mt4j.input.IMTInputEventListener;
+import org.mt4j.input.gestureAction.DefaultDragAction;
+import org.mt4j.input.gestureAction.InertiaDragAction;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeProcessor;
@@ -57,10 +62,10 @@ import processing.core.PImage;
 public class MapScene extends AbstractScene {
 
 	private Config conf;
-	private MapContainer container;
-	private Menu menu;
-	private MTComponent backgroundImage;
+	private MapContainer mapContainer;
+	private MapMenu mapMenu;
 	private MTHUD hud;
+	private File svgFile;
 
 	public MapScene(AbstractMTApplication app, String name) {
 
@@ -68,6 +73,9 @@ public class MapScene extends AbstractScene {
 
 		// Set current scene
 		ApplicationContext.setScene(this);
+
+		// Set background color
+		setClearColor(MTColor.WHITE);
 
 		// Load properties from project.properties
 		Properties properties = new Properties();
@@ -77,33 +85,57 @@ public class MapScene extends AbstractScene {
 			properties.load(fileStream);
 			fileStream.close();
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("Fichier project.properties non trouvé.");
+			System.exit(1);
 		}
 
 		// Set params
-		SAPI5Player.setTTSSpeed(properties.getProperty("tts_speed"));
-		MusicPlayer.getInstance().setSystemDirectory(properties.getProperty("accessimap_home")+"sounds");
+		SAPI5Player.setTTSSpeed(properties.getProperty("tts.speed"));
+		SAPI5Player.setLocale(properties.getProperty("tts.locale"));
+		SAPI5Player.setVoiceName(properties.getProperty("tts.voice.name"));
+		
+		MusicPlayer.getInstance().setSystemDirectory(
+				properties.getProperty("accessimap_home") + "sounds");
+		ScreenManager sm = new ScreenManager(properties);
+		System.out.println(sm);
+		ApplicationContext.setScreenManager(sm);
 
 		// Register players
 		ActionController.registerSoundPlayers(MusicPlayer.getInstance(),
 				SAPI5Player.getInstance());
 
-		// On peint le fond de la scène en blanc
-		setClearColor(new MTColor(255, 255, 255, 255));
+		// Create main container
+		MTRectangle mainContainer = new MTRectangle(app, sm.getScreenWidthPx(),
+				sm.getScreenHeightPx());
+		mainContainer.setFillColor(MTColor.WHITE);
+		ApplicationContext.clearAllGestures(mainContainer);
+		this.getCanvas().addChild(mainContainer);
+		ApplicationContext.setMainContainer(mainContainer);
 
 		// Map container
-		container = new MapContainer(1488, 1050, 744, 525);
+		// container = new MapContainer(1488, 1050, 744, 525);
+		mapContainer = new MapContainer();
 
 		// Set current algorithm
 		ApplicationContext.startGuidanceAlgorithm();
 
+		// Application menu
+		createApplicationMenu();
+
+		// MapMenu
+		mapMenu = new MapMenu();
+
+	}
+
+	private void createApplicationMenu() {
 		// Menus
-		app.getCssStyleManager().setGloballyEnabled(true);
+		this.getMTApplication().getCssStyleManager().setGloballyEnabled(true);
 
 		// Load a different CSS Style for each component
-		app.getCssStyleManager().loadStylesAndOverrideSelector(
-				CSSTemplates.BLUESTYLE,
-				new CSSSelector("MTHUD", CSSSelectorType.CLASS));
+		this.getMTApplication()
+				.getCssStyleManager()
+				.loadStylesAndOverrideSelector(CSSTemplates.BLUESTYLE,
+						new CSSSelector("MTHUD", CSSSelectorType.CLASS));
 
 		// Create Menu Items
 		List<MenuItem> menus = new ArrayList<MenuItem>();
@@ -112,12 +144,10 @@ public class MapScene extends AbstractScene {
 		menus.add(new MenuItem("Quitter", new GestureListener("quitter")));
 
 		// Create Heads up display (on bottom of the screen)
-		hud = new MTHUD(app, menus, 150, MTHUD.BOTTOM);
+		hud = new MTHUD(this.getMTApplication(), menus, 150, MTHUD.BOTTOM);
 		this.getCanvas().addChild(hud);
 
-		menu = new Menu();
-
-		app.addKeyListener(new KeyListener() {
+		this.getMTApplication().addKeyListener(new KeyListener() {
 
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -134,25 +164,42 @@ public class MapScene extends AbstractScene {
 				}
 			}
 		});
+
 	}
 
-	private void addNewMap(File svgFile) {
+	private void addNewMap(File svg) {
+
+		svgFile = svg;
 
 		// Remove all previous element from container
-		container.removeAllChildren();
+		mapContainer.removeAllChildren();
 
 		// MP3 root directory
 		MusicPlayer.getInstance().setMapDirectory(svgFile.getParent());
+
+		// Find an xml file
+		File[] xmlFiles = svgFile.getParentFile().listFiles(new FileFilter() {
+
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.getName().endsWith(".xml");
+			}
+		});
+
+		if (xmlFiles == null || xmlFiles.length == 0) {
+			System.out.println("Pas de fichier xml!");
+			System.exit(1);
+		}
 
 		// Binding XML
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(Config.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			conf = (Config) jaxbUnmarshaller.unmarshal(new File(svgFile
-					.getPath().replace(".svg", ".xml")));
+			conf = (Config) jaxbUnmarshaller.unmarshal(xmlFiles[0]);
 		} catch (JAXBException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			System.out.println(e1);
+			System.out.println("Fichier XML incorrect");
+			System.exit(1);
 		}
 
 		// Add filters and POI to context
@@ -167,46 +214,57 @@ public class MapScene extends AbstractScene {
 		for (POI poi : conf.getPois()) {
 			ApplicationContext.addPOI(poi.getId(), poi);
 		}
+		managePOICoordinates();
 
-		// Set new background image
-		PImage image = getMTApplication().loadImage(
-				svgFile.getPath().replace(".svg", ".jpg"));
+		// Set background image if exist!
+		File image = new File(svgFile.getPath().replace(".svg", ".png"));
+		mapContainer.setTexture(null);
+		if (image.exists()) {
+			mapContainer.setTexture(getMTApplication().loadImage(
+					image.getPath()));
+		}
 
-		// Parse svg file to find POIs
-		try {
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			SAXParser parser = factory.newSAXParser();
-			SVGParser svgParser = new SVGParser();
-			parser.parse(svgFile, svgParser);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// Remove background if already exist and create the new one
-		if (backgroundImage != null) {
-			getCanvas().removeChild(backgroundImage);
-		}
-		
-		backgroundImage = new MTBackgroundImage(getMTApplication(), image,
-				false);
-		getCanvas().addChild(backgroundImage);
-		
 		// Add POIs to container
 		for (POI poi : ApplicationContext.getPOIs()) {
-			poi.addToParent(container);
+			poi.addToParent(mapContainer);
 		}
 
 		// Create menu and send container to front
-		menu.create();
-		container.sendToFront();
-		
+		mapMenu.createSubMenus();
+		mapContainer.sendToFront();
+		mapContainer.removeDragListener();
+	}
+
+	private void managePOICoordinates() {
+
+		POI first = conf.getPois().get(0);
+
+		// Automatic binding from DER editor?
+		if (first.getX() == 0 && first.getY() == 0) {
+
+			for (POI poi : conf.getPois()) {
+				poi.setGraphicalPOI(new RectanglePOI(poi.getWidth(), poi
+						.getHeight(), poi.getX(), poi.getY(), poi));
+			}
+
+		} else {
+
+			try {
+				SAXParserFactory factory = SAXParserFactory.newInstance();
+				SAXParser parser = factory.newSAXParser();
+				SVGParser svgParser = new SVGParser();
+				parser.parse(svgFile, svgParser);
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 
@@ -247,10 +305,12 @@ public class MapScene extends AbstractScene {
 							hud.setVisible(false);
 							long startTime = System.nanoTime();
 							addNewMap(file);
-							System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+							System.out
+									.println((System.nanoTime() - startTime) / 1000000000.0f);
 							startTime = System.nanoTime();
 							MusicPlayer.getInstance().play("success.mp3");
-							System.out.println((System.nanoTime() - startTime) / 1000000000.0f);
+							System.out
+									.println((System.nanoTime() - startTime) / 1000000000.0f);
 						}
 					} else if (string.equals("quitter")) {
 						System.exit(0);
@@ -263,16 +323,25 @@ public class MapScene extends AbstractScene {
 
 	private class MapContainer extends MTRectangle {
 
-		public MapContainer(int width, int height, int x, int y) {
+		public MapContainer() {
 
-			super(ApplicationContext.getScene().getMTApplication(), new PImage(
-					width, height));
+			super(ApplicationContext.getScene().getMTApplication(),
+					ApplicationContext.getScreenManager().getMapWidthPx(),
+					ApplicationContext.getScreenManager().getMapHeightPx());
+
+			// super(ApplicationContext.getScene().getMTApplication(), new
+			// PImage(
+			// width, height));
 
 			ApplicationContext.clearAllGestures(this);
-			ApplicationContext.getScene().getCanvas().addChild(this);
+			ApplicationContext.getMainContainer().addChild(this);
 
-			setPositionGlobal(new Vector3D(x, y, 0));
+			// setPositionGlobal(new Vector3D(x, y, 0));
 			setStrokeColor(MTColor.BLACK);
+			
+			registerInputProcessor(new DragProcessor(ApplicationContext.getScene().getMTApplication()));
+			addGestureListener(DragProcessor.class, new DefaultDragAction());
+			addGestureListener(DragProcessor.class, new InertiaDragAction()); //Add inertia to dragging
 
 			addInputListener(new IMTInputEventListener() {
 				public boolean processInputEvent(MTInputEvent inEvt) {
@@ -321,6 +390,10 @@ public class MapScene extends AbstractScene {
 						}
 					});
 
+		}
+		
+		public void removeDragListener() {
+			this.removeAllGestureEventListeners(DragProcessor.class);
 		}
 	}
 }

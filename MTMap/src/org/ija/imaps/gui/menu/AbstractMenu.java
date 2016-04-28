@@ -3,27 +3,18 @@ package org.ija.imaps.gui.menu;
 import java.util.List;
 
 import org.ija.imaps.model.ApplicationContext;
-import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
-import org.mt4j.components.visibleComponents.shapes.MTRectangle.PositionAnchor;
 import org.mt4j.components.visibleComponents.widgets.MTTextArea;
-import org.mt4j.input.gestureAction.DefaultScaleAction;
-import org.mt4j.input.gestureAction.DefaultZoomAction;
 import org.mt4j.input.inputProcessors.IGestureEventListener;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapProcessor;
-import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
-import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.util.MTColor;
 import org.mt4j.util.font.FontManager;
 import org.mt4j.util.font.IFont;
 import org.mt4j.util.math.Vector3D;
-
-import processing.core.PImage;
 
 public abstract class AbstractMenu<E> extends MTRectangle {
 
@@ -36,8 +27,7 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 
 	public AbstractMenu(int width, int height, int x, int y) {
 
-		super(ApplicationContext.getScene().getMTApplication(), new PImage(
-				width, height));
+		super(ApplicationContext.getScene().getMTApplication(), width, height);
 
 		// Default values
 		currentIndex = 0;
@@ -45,7 +35,7 @@ public abstract class AbstractMenu<E> extends MTRectangle {
 
 		ApplicationContext.clearAllGestures(this);
 
-		setPositionGlobal(new Vector3D(x, y, 0));
+		setPositionRelativeToParent(new Vector3D(x, y, 0));
 		registerInputProcessor(new FlickProcessor(300, 5));
 		setStrokeColor(MTColor.BLACK);
 		addGestureListener(FlickProcessor.class, new IGestureEventListener() {

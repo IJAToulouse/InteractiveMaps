@@ -19,6 +19,18 @@ public class POI {
 	private String id;
 
 	@XmlAttribute
+	private float x;
+
+	@XmlAttribute
+	private float y;
+
+	@XmlAttribute
+	private float width;
+
+	@XmlAttribute
+	private float height;
+
+	@XmlAttribute
 	private String name;
 
 	@XmlElementWrapper
@@ -38,7 +50,7 @@ public class POI {
 	public List<Action> getActions() {
 		return actions;
 	}
-	
+
 	public Action getAction(String filterId) {
 		Action result = null;
 		for (Action action : actions) {
@@ -64,6 +76,22 @@ public class POI {
 
 	public void addToParent(MTRectangle container) {
 		container.addChild(gpoi.getShape());
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public float getWidth() {
+		return width;
+	}
+
+	public float getHeight() {
+		return height;
 	}
 
 	@Override

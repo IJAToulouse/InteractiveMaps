@@ -1,15 +1,15 @@
 package org.ija.imaps.model;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.ija.imaps.algorithm.XYGuidanceAlgorithm;
-import org.ija.tools.SoundPlayer;
+import org.ija.imaps.screen.ScreenManager;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.components.MTComponent;
+import org.mt4j.components.visibleComponents.shapes.MTRectangle;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.math.Vector3D;
 
@@ -24,6 +24,8 @@ public class ApplicationContext {
 	private static XYGuidanceAlgorithm algo;
 	private static Float svgWidht;
 	private static Float svgHeight;
+	private static ScreenManager screenManager;
+	private static MTComponent mainContainer;
 
 	public static Float getSvgWidht() {
 		return svgWidht;
@@ -127,5 +129,21 @@ public class ApplicationContext {
 			finger = null;
 			SAPI5Player.getInstance().play("Guidage terminé.");
 		}
+	}
+
+	public static void setScreenManager(ScreenManager sm) {
+		screenManager = sm;
+	}
+
+	public static ScreenManager getScreenManager() {
+		return (screenManager);
+	}
+
+	public static void setMainContainer(MTComponent compo) {
+		mainContainer = compo;
+	}
+
+	public static MTComponent getMainContainer() {
+		return (mainContainer);
 	}
 }
