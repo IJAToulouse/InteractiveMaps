@@ -2,6 +2,8 @@ package org.ija.imaps.main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -33,10 +35,12 @@ import org.ija.imaps.svg.SvgTranscoder;
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
+import org.mt4j.components.TransformSpace;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.components.visibleComponents.widgets.MTSlider;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.gestureAction.DefaultDragAction;
 import org.mt4j.input.gestureAction.InertiaDragAction;
@@ -72,6 +76,7 @@ public class MapScene extends AbstractScene {
 	private MapContainer mapContainer;
 	private MapMenu mapMenu;
 	private MTHUD hud;
+	private MTSlider ttsSlider;
 	private File svgFile;
 
 	public MapScene(AbstractMTApplication app, String name) {
@@ -150,6 +155,23 @@ public class MapScene extends AbstractScene {
 		menus.add(new MenuItem("Rechercher", new GestureListener(RECHERCHER)));
 		menus.add(new MenuItem("Générer", new GestureListener(GENERER)));
 		menus.add(new MenuItem("Quitter", new GestureListener(QUITTER)));
+		
+		// Slider
+		int width = ApplicationContext.getScreenManager().getMapWidthPx();
+		int height = ApplicationContext.getScreenManager().getMapHeightPx();
+        MTSlider slider = new MTSlider(this.getMTApplication(), 20, 20, 200, 38, 100.0f, 250.0f);
+        slider.setValue(SAPI5Player.getInstance().getTTSSpeed());
+        this.getCanvas().addChild(slider);
+        slider.setStrokeColor(new MTColor(0,0,0));
+        slider.setFillColor(new MTColor(220,220,220));
+        slider.getKnob().setFillColor(new MTColor(70,70,70));
+        slider.getKnob().setStrokeColor(new MTColor(70,70,70));
+        slider.addPropertyChangeListener("value", new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent p) {
+				SAPI5Player.setTTSSpeed((Float)p.getNewValue());
+			}
+		});
+        ApplicationContext.setTTSSlider(slider);
 
 		// Create Heads up display (on bottom of the screen)
 		hud = new MTHUD(this.getMTApplication(), menus, 150, MTHUD.BOTTOM);
@@ -169,6 +191,10 @@ public class MapScene extends AbstractScene {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 					hud.setVisible(!hud.isVisible());
+					ApplicationContext.getTTSSlider().setVisible(!ApplicationContext.getTTSSlider().isVisible());
+				}
+				if (e.getKeyCode() == KeyEvent.VK_S) {
+					ApplicationContext.getTTSSlider().setVisible(!ApplicationContext.getTTSSlider().isVisible());
 				}
 			}
 		});
@@ -312,6 +338,7 @@ public class MapScene extends AbstractScene {
 						File file = getFileFromChooser();
 						if (file != null) {
 							hud.setVisible(false);
+							ApplicationContext.getTTSSlider().setVisible(false);
 							long startTime = System.nanoTime();
 							addNewMap(file);
 							System.out

@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import javax.speech.Central;
 import javax.speech.EngineList;
-import javax.speech.EngineModeDesc;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.speech.synthesis.SynthesizerProperties;
@@ -114,23 +113,31 @@ public class SAPI5Player implements SoundPlayer {
 		}
 	}
 
+	public static void setTTSSpeed(Float speed) {
+		ttsSpeed = speed;
+	}
+
+	public Float getTTSSpeed() {
+		return ttsSpeed;
+	}
+
 	public static void main(String args[]) {
 
 		SAPI5Player.setTTSSpeed("200.0f");
 		SAPI5Player.setLocale("en-US");
-		//SAPI5Player.setVoiceName("hortense");
+		// SAPI5Player.setVoiceName("hortense");
 		SAPI5Player.getInstance().play("Ceci est un test.");
-		
+
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		SAPI5Player.setTTSSpeed("250.0f");
-		//SAPI5Player.getInstance().play("Ceci est un test.");
-		
+		// SAPI5Player.getInstance().play("Ceci est un test.");
+
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {

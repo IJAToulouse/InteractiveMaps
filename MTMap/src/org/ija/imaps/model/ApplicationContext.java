@@ -10,6 +10,7 @@ import org.ija.imaps.screen.ScreenManager;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.components.MTComponent;
 import org.mt4j.components.visibleComponents.shapes.MTRectangle;
+import org.mt4j.components.visibleComponents.widgets.MTSlider;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.math.Vector3D;
 
@@ -26,6 +27,7 @@ public class ApplicationContext {
 	private static Float svgHeight;
 	private static ScreenManager screenManager;
 	private static MTComponent mainContainer;
+	private static MTSlider slider;
 
 	public static Float getSvgWidht() {
 		return svgWidht;
@@ -145,5 +147,13 @@ public class ApplicationContext {
 
 	public static MTComponent getMainContainer() {
 		return (mainContainer);
+	}
+
+	public static void setTTSSlider(MTSlider s) {
+		slider = s;
+	}
+	
+	public static MTSlider getTTSSlider() {
+		return slider;
 	}
 }
