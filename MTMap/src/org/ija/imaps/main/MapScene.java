@@ -18,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.apache.batik.transcoder.TranscoderException;
 import org.ija.imaps.camera.CameraReader;
 import org.ija.imaps.controller.ActionController;
 import org.ija.imaps.gui.CustomFileChooser;
@@ -28,6 +29,7 @@ import org.ija.imaps.model.Config;
 import org.ija.imaps.model.POI;
 import org.ija.imaps.parser.SVGParser;
 import org.ija.imaps.screen.ScreenManager;
+import org.ija.imaps.svg.SvgTranscoder;
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
@@ -61,6 +63,11 @@ import processing.core.PImage;
 // Classe de la scène de la carte interprétée
 public class MapScene extends AbstractScene {
 
+	private static final int FLASHER = 0;
+	private static final int RECHERCHER = 1;
+	private static final int GENERER = 2;
+	private static final int QUITTER = 9;
+
 	private Config conf;
 	private MapContainer mapContainer;
 	private MapMenu mapMenu;
@@ -93,7 +100,7 @@ public class MapScene extends AbstractScene {
 		SAPI5Player.setTTSSpeed(properties.getProperty("tts.speed"));
 		SAPI5Player.setLocale(properties.getProperty("tts.locale"));
 		SAPI5Player.setVoiceName(properties.getProperty("tts.voice.name"));
-		
+
 		MusicPlayer.getInstance().setSystemDirectory(
 				properties.getProperty("accessimap_home") + "sounds");
 		ScreenManager sm = new ScreenManager(properties);
@@ -139,9 +146,10 @@ public class MapScene extends AbstractScene {
 
 		// Create Menu Items
 		List<MenuItem> menus = new ArrayList<MenuItem>();
-		menus.add(new MenuItem("Flasher", new GestureListener("flasher")));
-		menus.add(new MenuItem("Rechercher", new GestureListener("rechercher")));
-		menus.add(new MenuItem("Quitter", new GestureListener("quitter")));
+		menus.add(new MenuItem("Flasher", new GestureListener(FLASHER)));
+		menus.add(new MenuItem("Rechercher", new GestureListener(RECHERCHER)));
+		menus.add(new MenuItem("Générer", new GestureListener(GENERER)));
+		menus.add(new MenuItem("Quitter", new GestureListener(QUITTER)));
 
 		// Create Heads up display (on bottom of the screen)
 		hud = new MTHUD(this.getMTApplication(), menus, 150, MTHUD.BOTTOM);
@@ -164,7 +172,6 @@ public class MapScene extends AbstractScene {
 				}
 			}
 		});
-
 	}
 
 	private void addNewMap(File svg) {
@@ -265,7 +272,6 @@ public class MapScene extends AbstractScene {
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	private File getFileFromChooser() {
@@ -283,11 +289,11 @@ public class MapScene extends AbstractScene {
 	}
 
 	private class GestureListener implements IGestureEventListener {
-		String string;
+		int action;
 
-		public GestureListener(String string) {
+		public GestureListener(int action) {
 			super();
-			this.string = string;
+			this.action = action;
 		}
 
 		public boolean processGestureEvent(MTGestureEvent ge) {
@@ -295,11 +301,14 @@ public class MapScene extends AbstractScene {
 			if (ge instanceof TapEvent) {
 				TapEvent te = (TapEvent) ge;
 				if (te.getTapID() == TapEvent.TAPPED) {
-					if (string.equals("flasher")) {
+
+					switch (action) {
+					case FLASHER:
 						hud.setVisible(false);
 						addNewMap(getFileFromQrCode());
 						MusicPlayer.getInstance().play("success.mp3");
-					} else if (string.equals("rechercher")) {
+						break;
+					case RECHERCHER:
 						File file = getFileFromChooser();
 						if (file != null) {
 							hud.setVisible(false);
@@ -312,8 +321,43 @@ public class MapScene extends AbstractScene {
 							System.out
 									.println((System.nanoTime() - startTime) / 1000000000.0f);
 						}
-					} else if (string.equals("quitter")) {
+						break;
+					case GENERER:
+						File source = getFileFromChooser();
+						if (source != null) {
+							boolean success = false;
+							try {
+								SvgTranscoder.transcode(source, "png");
+							} catch (TranscoderException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							try {
+								SvgTranscoder.transcode(source, "pdf");
+								success = true;
+							} catch (TranscoderException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (success) {
+								SAPI5Player.getInstance().play("Conversion réussi.");
+							} else {
+								SAPI5Player.getInstance().play("La conversion a échoué.");
+							}
+						}
+						break;
+					case QUITTER:
 						System.exit(0);
+						break;
+
+					default:
+						break;
 					}
 				}
 			}
@@ -338,10 +382,11 @@ public class MapScene extends AbstractScene {
 
 			// setPositionGlobal(new Vector3D(x, y, 0));
 			setStrokeColor(MTColor.BLACK);
-			
-			registerInputProcessor(new DragProcessor(ApplicationContext.getScene().getMTApplication()));
+
+			registerInputProcessor(new DragProcessor(ApplicationContext
+					.getScene().getMTApplication()));
 			addGestureListener(DragProcessor.class, new DefaultDragAction());
-			addGestureListener(DragProcessor.class, new InertiaDragAction()); //Add inertia to dragging
+			addGestureListener(DragProcessor.class, new InertiaDragAction());
 
 			addInputListener(new IMTInputEventListener() {
 				public boolean processInputEvent(MTInputEvent inEvt) {
@@ -391,7 +436,7 @@ public class MapScene extends AbstractScene {
 					});
 
 		}
-		
+
 		public void removeDragListener() {
 			this.removeAllGestureEventListeners(DragProcessor.class);
 		}
