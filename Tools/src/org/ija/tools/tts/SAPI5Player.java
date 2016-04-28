@@ -1,9 +1,10 @@
 package org.ija.tools.tts;
 
-import javax.speech.AudioException;
+import java.util.Locale;
+
 import javax.speech.Central;
 import javax.speech.EngineList;
-import javax.speech.EngineStateError;
+import javax.speech.EngineModeDesc;
 import javax.speech.synthesis.Synthesizer;
 import javax.speech.synthesis.SynthesizerModeDesc;
 import javax.speech.synthesis.SynthesizerProperties;
@@ -15,23 +16,18 @@ public class SAPI5Player implements SoundPlayer {
 
 	private Synthesizer synth = null;
 	private static Float ttsSpeed = 190.0f;
+	private static Locale locale = Locale.FRANCE;
+	private static String voiceName = "";
 
 	/** Constructeur privé */
 	private SAPI5Player() {
 		try {
-			Voice voice = null;
-			EngineList list = Central.availableSynthesizers(null);
-			SynthesizerModeDesc desc = null;
-			for (int i = 0; voice == null && i < list.size(); i++) {
-				desc = (SynthesizerModeDesc) list.elementAt(i);
-				if (desc.getModeName().equals("Microsoft SAPI5")) {
-					voice = desc.getVoices()[0];
-				}
-			}
+			SynthesizerModeDesc desc = getEngine();
 
-			if (voice == null) {
-				System.out.println("Unable to find a SAPI5 voice - quitting");
-				System.exit(0);
+			if (desc == null) {
+				System.out.println("Unable to find a voice for " + locale + " "
+						+ voiceName);
+				System.exit(1);
 			}
 
 			synth = Central.createSynthesizer(desc);
@@ -41,11 +37,29 @@ public class SAPI5Player implements SoundPlayer {
 
 			SynthesizerProperties props = synth.getSynthesizerProperties();
 			props.setSpeakingRate(ttsSpeed);
-			props.setVoice(voice);
+			props.setVoice(desc.getVoices()[0]);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	private SynthesizerModeDesc getEngine() {
+		Voice voice = null;
+		EngineList list = Central.availableSynthesizers(null);
+		SynthesizerModeDesc desc = null;
+		for (int i = 0; voice == null && i < list.size(); i++) {
+			desc = (SynthesizerModeDesc) list.elementAt(i);
+
+			if (desc.getLocale().equals(locale)) {
+				if ("".equals(voiceName)
+						|| desc.getVoices()[0].getName().toLowerCase()
+								.contains(voiceName.toLowerCase())) {
+					return desc;
+				}
+			}
+		}
+		return null;
 	}
 
 	/** Holder */
@@ -77,23 +91,6 @@ public class SAPI5Player implements SoundPlayer {
 		synth.cancelAll();
 	}
 
-	public static void main(String args[]) throws AudioException,
-			EngineStateError, InterruptedException {
-
-		Voice voice = null;
-		Voice voice2 = new Voice();
-		EngineList list = Central.availableSynthesizers(null);
-		SynthesizerModeDesc desc = null;
-		for (int i = 0; voice == null && i < list.size(); i++) {
-			desc = (SynthesizerModeDesc) list.elementAt(i);
-			System.out.println(desc.getModeName());
-			System.out.println(desc.getEngineName());
-			for (Voice vo : desc.getVoices()) {
-				System.out.println(vo);
-			}
-		}
-	}
-
 	private void test(String string) {
 		System.out.println(synth.enumerateQueue().hasMoreElements());
 
@@ -116,4 +113,40 @@ public class SAPI5Player implements SoundPlayer {
 			ttsSpeed = Float.valueOf(speed);
 		}
 	}
+
+	public static void main(String args[]) {
+
+		SAPI5Player.setTTSSpeed("200.0f");
+		SAPI5Player.setLocale("en-US");
+		//SAPI5Player.setVoiceName("hortense");
+		SAPI5Player.getInstance().play("Ceci est un test.");
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		SAPI5Player.setTTSSpeed("250.0f");
+		//SAPI5Player.getInstance().play("Ceci est un test.");
+		
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.exit(0);
+
+	}
+
+	public static void setLocale(String strLocale) {
+		locale = Locale.forLanguageTag(strLocale);
+	}
+
+	public static void setVoiceName(String name) {
+		voiceName = name;
+	}
+
 }
