@@ -24,10 +24,11 @@ import org.apache.batik.transcoder.TranscoderException;
 import org.ija.imaps.camera.CameraReader;
 import org.ija.imaps.controller.ActionController;
 import org.ija.imaps.gui.CustomFileChooser;
-import org.ija.imaps.gui.menu.MapMenu;
+import org.ija.imaps.gui.menu.GraphicalMapMenu;
 import org.ija.imaps.gui.shape.RectanglePOI;
 import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.Config;
+import org.ija.imaps.model.Filter;
 import org.ija.imaps.model.POI;
 import org.ija.imaps.parser.SVGParser;
 import org.ija.imaps.screen.ScreenManager;
@@ -35,7 +36,6 @@ import org.ija.imaps.svg.SvgTranscoder;
 import org.ija.tools.media.MusicPlayer;
 import org.ija.tools.tts.SAPI5Player;
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.components.TransformSpace;
 import org.mt4j.components.css.style.CSSSelector;
 import org.mt4j.components.css.util.CSSKeywords.CSSSelectorType;
 import org.mt4j.components.css.util.CSSTemplates;
@@ -57,12 +57,9 @@ import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.Uni
 import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
 import org.mt4j.sceneManagement.AbstractScene;
 import org.mt4j.util.MTColor;
-import org.mt4j.util.math.Vector3D;
 import org.mt4jx.components.visibleComponents.widgets.menus.MTHUD;
 import org.mt4jx.components.visibleComponents.widgets.menus.MenuItem;
 import org.xml.sax.SAXException;
-
-import processing.core.PImage;
 
 // Classe de la scène de la carte interprétée
 public class MapScene extends AbstractScene {
@@ -74,7 +71,7 @@ public class MapScene extends AbstractScene {
 
 	private Config conf;
 	private MapContainer mapContainer;
-	private MapMenu mapMenu;
+	private GraphicalMapMenu mapMenu;
 	private MTHUD hud;
 	private MTSlider ttsSlider;
 	private File svgFile;
@@ -135,7 +132,7 @@ public class MapScene extends AbstractScene {
 		createApplicationMenu();
 
 		// MapMenu
-		mapMenu = new MapMenu();
+		mapMenu = new GraphicalMapMenu();
 
 	}
 
@@ -234,10 +231,14 @@ public class MapScene extends AbstractScene {
 			System.out.println("Fichier XML incorrect");
 			System.exit(1);
 		}
+		
+		// GD
+		for (Filter filter : conf.getFilters()) {
+			filter.getName();
+		}
 
 		// Add filters and POI to context
 		ApplicationContext.setFilters(conf.getFilters());
-		ApplicationContext.setCurrentFilter(conf.getFilters().get(0));
 
 		System.out.println("\nConfigurations :");
 		System.out.println(conf.getFilters());

@@ -8,9 +8,9 @@ import org.ija.imaps.model.ApplicationContext;
 import org.ija.imaps.model.POI;
 import org.ija.tools.tts.SAPI5Player;
 
-public class SubMenu extends AbstractMenu<Action> {
+public class POIMenu extends AbstractMenu<Action> {
 
-	public SubMenu(int width, int height, int x, int y) {
+	public POIMenu(int width, int height, int x, int y) {
 		super(width, height, x, y);
 		textVisible(false);
 	}
@@ -47,8 +47,8 @@ public class SubMenu extends AbstractMenu<Action> {
 	@Override
 	protected void menuGet() {
 		if (ApplicationContext.getCurrentFilter().getExpandable()) {
-			SAPI5Player.getInstance()
-					.play(menuItem.get(currentIndex).getValue());
+			SAPI5Player.getInstance().play(
+					menuItem.get(currentIndex).getValue());
 		} else {
 			SAPI5Player.getInstance().play("Aucun sous-menu pour ce filtre");
 		}
@@ -88,7 +88,7 @@ public class SubMenu extends AbstractMenu<Action> {
 
 			for (POI poi : ApplicationContext.getPOIs()) {
 				Action temp = poi.getAction(filterId);
-				if (temp!=null) {
+				if (temp != null) {
 					menuItem.add(temp);
 				}
 			}
@@ -101,5 +101,4 @@ public class SubMenu extends AbstractMenu<Action> {
 	public void setTextVisible(boolean bool) {
 		textVisible(bool);
 	}
-
 }

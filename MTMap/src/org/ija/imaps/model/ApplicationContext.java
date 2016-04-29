@@ -21,6 +21,7 @@ public class ApplicationContext {
 	private static List<Filter> filters;
 	private static AbstractScene scene;
 	private static Map<String, POI> pois = new HashMap<String, POI>();
+	private static Map<String, Filter> filterIndex = new HashMap<String, Filter>();
 	private static Vector3D finger;
 	private static XYGuidanceAlgorithm algo;
 	private static Float svgWidht;
@@ -52,11 +53,15 @@ public class ApplicationContext {
 	public static Filter getCurrentFilter() {
 		return filter;
 	}
-
-	public static void setCurrentFilter(Filter filter) {
-		ApplicationContext.filter = filter;
+	
+	public static Filter getFilterFromIndex(String name) {
+		return filterIndex.get(name);
 	}
 
+	public static void setCurrentFilter(String filter) {
+		ApplicationContext.filter = filterIndex.get(filter);
+	}
+	
 	public static AbstractScene getScene() {
 		return scene;
 	}
@@ -76,6 +81,11 @@ public class ApplicationContext {
 
 	public static void setFilters(List<Filter> filters) {
 		ApplicationContext.filters = filters;
+		filterIndex.clear();
+		for (Filter filter : filters) {
+			filterIndex.put(filter.getName(), filter);
+		}
+		ApplicationContext.filter = filters.get(0);
 	}
 
 	public static Collection<POI> getPOIs() {
